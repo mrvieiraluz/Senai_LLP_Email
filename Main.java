@@ -1,94 +1,60 @@
-public class main {
-    public static void main(String[] args) {
-        int quantidade = 1;
-
-        if (args.length > 0) {
-            try {
-                quantidade = Integer.parseInt(args[0]);
-                if (quantidade < 1) {
-                    System.out.println("Informe um número de dados maior ou igual a 1.");
-                    return;
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Uso: java main [quantidade_de_dados]");
-                System.out.println("Exemplo: java main 2");
-                return;
+import java.util.HashSet;
+import java.util.Scanner;
+import java.util.Set;
+public class Main {
+    public static int numEmailsUnicos(String[] emails) {
+       
+        Set<String> enderecos = new HashSet<>();
+        for (String email : emails) {
+            String normalizado = normalizar(email);
+            if (normalizado != null) {
+                enderecos.add(normalizado);
             }
         }
-
-        for (int i = 1; i <= quantidade; i++) {
-            int valor = (int) (Math.random() * 6) + 1;
-            System.out.println("Dado " + i + ": " + valor);
-            imprimirDado(valor);
-            if (i < quantidade) {
-                System.out.println();
-            }
-        }
+        return enderecos.size();
     }
+    private static String normalizar(String email) {
+        int arroba = email.indexOf('@');
+        if (arroba == -1) return null;
 
-    private static void imprimirDado(int valor) {
-        String[] desenho;
-        switch (valor) {
-            case 1:
-                desenho = new String[]{
-                    "+-------+",
-                    "|       |",
-                    "|   o   |",
-                    "|       |",
-                    "+-------+"
-                };
-                break;
-            case 2:
-                desenho = new String[]{
-                    "+-------+",
-                    "| o     |",
-                    "|       |",
-                    "|     o |",
-                    "+-------+"
-                };
-                break;
-            case 3:
-                desenho = new String[]{
-                    "+-------+",
-                    "| o     |",
-                    "|   o   |",
-                    "|     o |",
-                    "+-------+"
-                };
-                break;
-            case 4:
-                desenho = new String[]{
-                    "+-------+",
-                    "| o   o |",
-                    "|       |",
-                    "| o   o |",
-                    "+-------+"
-                };
-                break;
-            case 5:
-                desenho = new String[]{
-                    "+-------+",
-                    "| o   o |",
-                    "|   o   |",
-                    "| o   o |",
-                    "+-------+"
-                };
-                break;
-            case 6:
-                desenho = new String[]{
-                    "+-------+",
-                    "| o   o |",
-                    "| o   o |",
-                    "| o   o |",
-                    "+-------+"
-                };
-                break;
-            default:
-                desenho = new String[]{"Valor incorreto"};
+        String nomeLocal = email.substring(0, arroba);
+        String dominio   = email.substring(arroba + 1);
+        int plus = nomeLocal.indexOf('+');
+        if (plus != -1) {
+            nomeLocal = nomeLocal.substring(0, plus);
+        }
+        nomeLocal = nomeLocal.replace(".", "");
+
+        return nomeLocal + "@" + dominio;
+    }
+    public static void main(String[] args) {
+        String[] emails1 = {
+            "test.email+alex@leetcode.com",
+            "test.e.mail+bob.cathy@leetcode.com",
+            "testemail+david@lee.tcode.com"
+        };
+
+        String[] emails2 = {
+            "a@leetcode.com",
+            "b@leetcode.com",
+            "c@leetcode.com"
+        };
+        System.out.println("=== Testes automáticos ===");
+        System.out.println("Exemplo 1 => " + numEmailsUnicos(emails1) + " (esperado: 2)");
+        System.out.println("Exemplo 2 => " + numEmailsUnicos(emails2) + " (esperado: 3)");
+
+        System.out.println();
+        System.out.println("=== Entrada manual ===");
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Quantos e-mails deseja informar? ");
+        int n = Integer.parseInt(sc.nextLine().trim());
+
+        String[] entrada = new String[n];
+        for (int i = 0; i < n; i++) {
+            System.out.print("E-mail " + (i + 1) + ": ");
+            entrada[i] = sc.nextLine().trim();
         }
 
-        for (String linha : desenho) {
-            System.out.println(linha);
-        }
+        System.out.println("Endereços únicos: " + numEmailsUnicos(entrada));
     }
 }
